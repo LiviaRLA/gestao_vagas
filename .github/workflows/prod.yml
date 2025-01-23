@@ -32,6 +32,6 @@ jobs:
             - name: Pull image docker hub
               run: docker pull livia42/gestao_vagas:latest
             - name: Remove container
-              run: docker rm - f gestao-vagas
+              run: docker rm -f gestao-vagas
             - name: Run docker container
               run: docker run -d -p 8080:8080 -e DATABASE_URL=${{secrets.DATABASE_URL}} -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD=${{secrets.DATABASE_PASSWORD}} --name gestao-vagas

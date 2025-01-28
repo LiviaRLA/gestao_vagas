@@ -44,6 +44,8 @@ public class AuthCandidateUseCase {
             throw new AuthenticationException("Username/password incorrect");
         }
 
+        var roles =  Arrays.asList("CANDIDATE");
+
         // Generate token
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         var expiresIn = Instant.now().plus(Duration.ofHours(1));
@@ -51,7 +53,7 @@ public class AuthCandidateUseCase {
         
             .withSubject(candidate.getId().toString())
             .withIssuer("javagas")
-            .withClaim("roles", Arrays.asList("CANDIDATE"))
+            .withClaim("roles", roles)
             .withExpiresAt(expiresIn)
             .sign(algorithm);
 
@@ -59,6 +61,7 @@ public class AuthCandidateUseCase {
         var authCandidateResponse = AuthCandidateResponseDTO.builder()
             .accessToken(token)
             .expiresIn(expiresIn.toEpochMilli())
+            .roles(roles)
             .build();
 
         return authCandidateResponse;

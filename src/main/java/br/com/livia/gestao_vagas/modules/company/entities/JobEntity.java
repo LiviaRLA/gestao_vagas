@@ -49,7 +49,6 @@ public class JobEntity {
     @Column(name = "companyId", nullable = false)
     private UUID companyId;
     
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 }

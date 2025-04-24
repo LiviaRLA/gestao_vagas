@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Entity(name = "apply_jobs")
 public class ApplyJobEntity {
     
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -44,9 +43,6 @@ public class ApplyJobEntity {
     @Column(name = "jobId" )
     private UUID jobId;
 
-
-
     @CreationTimestamp
     private LocalDateTime createdAt;
-
 }

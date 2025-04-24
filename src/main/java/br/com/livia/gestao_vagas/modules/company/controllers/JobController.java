@@ -34,7 +34,7 @@ public class JobController {
 
     @PostMapping("/")
     @PreAuthorize("hasRole('COMPANY')") //validar a role antes de executar o método
-        @Tag(
+    @Tag(
         name = "Vagas",
         description = "Informações das vagas"
     )
@@ -50,22 +50,13 @@ public class JobController {
     @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<Object> create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
 
-        var companyId = request.getAttribute("companyId"); // Pega o id da empresa logada
+        var companyId = request.getAttribute("companyId");
 
         try {
-            var jobEntity = JobEntity.builder() // Cria um job
-                .description(createJobDTO.getDescription())
-                .benefits(createJobDTO.getBenefits())
-                .level(createJobDTO.getLevel())
-                .companyId(UUID.fromString(companyId.toString())) // Seta o id da empresa no job
-                .build();
-             
-            var result = this.createJobUseCase.execute(jobEntity); // Chama o caso de uso para criar o job
-            return ResponseEntity.ok().body(result);
+            JobEntity job = this.createJobUseCase.execute(createJobDTO, UUID.fromString(companyId.toString()));
+            return ResponseEntity.ok().body(job);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        
     }
-    
 }

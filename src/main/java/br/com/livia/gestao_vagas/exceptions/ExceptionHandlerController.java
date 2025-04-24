@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 
-@ControllerAdvice // A anotação @ControllerAdvice é especializada em tratamento de exceções em todas as classes anotadas com @Controller
+@ControllerAdvice
 public class ExceptionHandlerController {
 
     private MessageSource messageSource;
@@ -21,7 +21,7 @@ public class ExceptionHandlerController {
         this.messageSource = messageSource;
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class) // A anotação @ExceptionHandler é usada para tratar exceções específicas e enviar a resposta de erro apropriada ao cliente
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ErrorMessageDTO>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
 
         List<ErrorMessageDTO> dto = new ArrayList<>();

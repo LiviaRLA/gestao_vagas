@@ -22,20 +22,23 @@ import lombok.NoArgsConstructor;
 
 
 @Data
-@Entity(name = "job")
 @Builder
 @AllArgsConstructor 
 @NoArgsConstructor
+@Entity(name = "job")
 public class JobEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotBlank(message = "Title is mandatory")
+    private String title;
+
     @Schema(example = "Vaga para design")
     private String description;
-    
-    @NotBlank(message = "Title is mandatory")
+
+    @NotBlank(message = "Level is mandatory")
     @Schema(example = "JUNIOR")
     private String level;
     

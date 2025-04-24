@@ -4,11 +4,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.livia.gestao_vagas.modules.candidate.dto.ProfileCandidateResponseDTO;
+import br.com.livia.gestao_vagas.modules.candidate.dto.UpdateCandidateDTO;
 import br.com.livia.gestao_vagas.modules.candidate.entities.CandidateEntity;
 import br.com.livia.gestao_vagas.modules.candidate.useCases.ApplyJobCandidateUseCase;
 import br.com.livia.gestao_vagas.modules.candidate.useCases.CreateCandidateUseCase;
+import br.com.livia.gestao_vagas.modules.candidate.useCases.DeleteCandidateUseCase;
 import br.com.livia.gestao_vagas.modules.candidate.useCases.ListAllJobsByFilterUseCase;
 import br.com.livia.gestao_vagas.modules.candidate.useCases.ProfileCandidateUseCase;
+import br.com.livia.gestao_vagas.modules.candidate.useCases.UpdateCandidateUseCase;
 import br.com.livia.gestao_vagas.modules.company.entities.JobEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -29,9 +32,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
@@ -47,6 +51,12 @@ public class CandidateController {
 
     @Autowired
     private ProfileCandidateUseCase profileCandidateUseCase;
+
+    @Autowired
+    private UpdateCandidateUseCase updateCandidateUseCase;
+
+    @Autowired
+    private DeleteCandidateUseCase deleteCandidateUseCase;
 
     @Autowired
     private ListAllJobsByFilterUseCase listAllJobsByFilterUseCase;
@@ -75,8 +85,7 @@ public class CandidateController {
         }	
     }
 
-
-    @GetMapping("/")
+    @GetMapping("/profile")
     @PreAuthorize("hasRole('CANDIDATE')")
     @Operation(
         summary = "Perfil do candidato",
@@ -91,16 +100,65 @@ public class CandidateController {
     @SecurityRequirement(name = "jwt_auth")
     public ResponseEntity<Object> get(HttpServletRequest request) {
 
-        var idCandidate = request.getAttribute("candidateId");
+        var candidateId = request.getAttribute("candidateId");
         try{
             var profile = this.profileCandidateUseCase
-                .execute(UUID.fromString(idCandidate.toString()));
+                .execute(UUID.fromString(candidateId.toString()));
             return ResponseEntity.ok().body(profile);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }	
-        
     }
+
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(
+        summary = "Atualizar informações do candidato",
+        description = "Essa função é responsável por atualizar as informações do candidato"
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", content = {
+            @Content(schema = @Schema(implementation = CandidateEntity.class))
+        })
+    })
+    @SecurityRequirement(name = "jwt_auth")
+    @PutMapping("/update")
+    public ResponseEntity<Object> update(HttpServletRequest request, @RequestBody UpdateCandidateDTO candidateDTO) {
+
+        var candidateId = request.getAttribute("candidateId");
+
+        try {    
+            var candidate = this.updateCandidateUseCase
+            .execute(UUID.fromString(candidateId.toString()), candidateDTO);
+
+            return ResponseEntity.ok().body(candidate);
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('CANDIDATE')")
+    @Operation(
+        summary = "Excluir cadastro do candidato",
+        description = "Essa função é responsável por excluir o cadastro do candidato"
+    )
+    @SecurityRequirement(name = "jwt_auth")
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> update(HttpServletRequest request, @RequestBody String password) {
+
+        var candidateId = request.getAttribute("candidateId");
+
+        try {    
+            var candidate = this.deleteCandidateUseCase
+            .execute(UUID.fromString(candidateId.toString()), password);
+
+            return ResponseEntity.ok().body(candidate);
+            
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
     @GetMapping("/job")
     @PreAuthorize("hasRole('CANDIDATE')")
@@ -126,18 +184,16 @@ public class CandidateController {
         description = "Essa função é responsável por realizar a inscrição do candidato em uma vaga"
     )
     @SecurityRequirement(name = "jwt_auth")
-    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID idJob){
+    public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID jobId){
         
-        var idCandidate = request.getAttribute("candidateId");
+        var candidateId = request.getAttribute("candidateId");
 
         try {
-            var result = this.applyJobCandidateUseCase.execute(UUID.fromString(idCandidate.toString()), idJob);
+            var result = this.applyJobCandidateUseCase.execute(UUID.fromString(candidateId.toString()), jobId);
             return ResponseEntity.ok().body(result);
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
-    
 }

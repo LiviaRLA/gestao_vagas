@@ -29,7 +29,5 @@ public class JWTProvider {
         }catch (JWTVerificationException e){
             return null;
         }
-        
-    }
-    
+    } 
 }

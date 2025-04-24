@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "company") // name of the table in the database
+@Entity(name = "company")
 public class CompanyEntity {
 
     @Id

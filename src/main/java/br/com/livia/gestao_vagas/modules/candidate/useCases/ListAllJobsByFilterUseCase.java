@@ -18,5 +18,4 @@ public class ListAllJobsByFilterUseCase {
         return this.jobRepository.findByDescriptionContainingIgnoreCase(filter);
 
     }
-    
 }

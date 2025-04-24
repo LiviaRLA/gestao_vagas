@@ -17,6 +17,5 @@ public class AuthCandidateResponseDTO {
     private String accessToken;
     private Long expiresIn;
     private List<String> roles;
-
     
 }

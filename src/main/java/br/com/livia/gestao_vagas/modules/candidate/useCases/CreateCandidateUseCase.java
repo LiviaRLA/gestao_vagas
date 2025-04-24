@@ -8,13 +8,13 @@ import br.com.livia.gestao_vagas.exceptions.UserFoundException;
 import br.com.livia.gestao_vagas.modules.candidate.entities.CandidateEntity;
 import br.com.livia.gestao_vagas.modules.candidate.repositories.CandidateRepository;
 
-@Service // Define a classe como um bean do Spring
+@Service
 public class CreateCandidateUseCase {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired // Injeção de dependência
+    @Autowired
     private CandidateRepository candidateRepository;
 
     public CandidateEntity execute(CandidateEntity candidateEntity){
@@ -27,8 +27,9 @@ public class CreateCandidateUseCase {
 
         var password = this.passwordEncoder.encode(candidateEntity.getPassword());
         candidateEntity.setPassword(password);
+
+        CandidateEntity candidate = this.candidateRepository.save(candidateEntity);
         
-        return this.candidateRepository.save(candidateEntity);
+        return candidate;
     }
-    
 }

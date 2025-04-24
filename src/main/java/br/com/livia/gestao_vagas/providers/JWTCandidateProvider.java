@@ -9,15 +9,13 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 
-
-
 @Service
 public class JWTCandidateProvider {
 
     @Value("${security.token.secret.candidate}")
     private String secretKey;
 
-    public DecodedJWT validatetoken(String token) {
+    public DecodedJWT validateToken(String token) {
 
         token = token.replace("Bearer ", "");
 
@@ -32,6 +30,5 @@ public class JWTCandidateProvider {
         } catch (JWTVerificationException e) {
             return null;
         }
-    }
-    
+    } 
 }

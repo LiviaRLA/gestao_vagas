@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-@Configuration // Indica que é uma classe de configuração
+@Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
@@ -27,22 +27,19 @@ public class SecurityConfig {
         "/actuator/**"
     };
 
-    @Bean // Indica que o método é um Bean gerenciado pelo Spring
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(csrf -> csrf.disable()) // Desabilita o CSRF
             .authorizeHttpRequests(auth -> {
-                // Permite todas as requisições para os endpoints de autenticação
                 auth.requestMatchers("/candidate/").permitAll()
                     .requestMatchers("/company/").permitAll()
                     .requestMatchers("/company/auth").permitAll()
                     .requestMatchers("/candidate/auth").permitAll()
                     .requestMatchers(PERMIT_LIST).permitAll();
                 
-                // Exige autenticação para qualquer outra requisição
                 auth.anyRequest().authenticated(); 
             })
             
-            // Adiciona o filtro de segurança antes do BasicAuthenticationFilter
             .addFilterBefore(securityCandidateFilter, BasicAuthenticationFilter.class) 
             .addFilterBefore(securityCompanyFilter, BasicAuthenticationFilter.class);
 
@@ -51,7 +48,6 @@ public class SecurityConfig {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Retorna um PasswordEncoder que usa o BCrypt
+        return new BCryptPasswordEncoder();
     }
-    
 }

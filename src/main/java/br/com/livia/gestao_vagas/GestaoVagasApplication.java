@@ -5,11 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 
-@SpringBootApplication // Indica que é uma aplicação Spring Boot
+@SpringBootApplication
 public class GestaoVagasApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GestaoVagasApplication.class, args);
 	}
-
 }

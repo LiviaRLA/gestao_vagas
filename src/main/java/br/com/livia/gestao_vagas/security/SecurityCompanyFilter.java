@@ -28,7 +28,6 @@ public class SecurityCompanyFilter extends OncePerRequestFilter {
       HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException { 
 
-        //SecurityContextHolder.getContext().setAuthentication(null);
         String header = request.getHeader("Authorization");
 
         if (request.getRequestURI().startsWith("/company")) {
@@ -41,18 +40,22 @@ public class SecurityCompanyFilter extends OncePerRequestFilter {
                     return;
                 }
 
+                request.setAttribute("companyId", token.getSubject());
+                System.out.println("===== TOKEN =====");
+                System.out.println(token);
+
                 var roles = token.getClaim("roles").asList(Object.class);
                 var grants = roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toString().toUpperCase()))
                     .toList();
 
-                request.setAttribute("companyId", token.getSubject());
+
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(token.getSubject(), null, grants);
+
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
 
         filterChain.doFilter(request, response); 
     }
-    
 }

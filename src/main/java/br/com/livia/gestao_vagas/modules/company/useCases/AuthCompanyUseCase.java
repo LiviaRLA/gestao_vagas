@@ -60,6 +60,7 @@ public class AuthCompanyUseCase {
         var authCompanyResponseDTO = AuthCompanyResponseDTO.builder()
             .accessToken(token)
             .expiresIn(expiresIn.toEpochMilli())
+            .roles(roles)
             .build();
 
         return authCompanyResponseDTO;
